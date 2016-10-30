@@ -1,11 +1,4 @@
-// updated 2/14/2016
 
-#include "error.h"
-
-#include <iostream>
-using namespace std;
-
-// The following is a global variable defined by the scanner (the lex .l file)
 extern int line_count; // the line number of current token
 
 /* static */ bool Error::m_runtime = false;
