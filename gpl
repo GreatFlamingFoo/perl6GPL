@@ -1,0 +1,176 @@
+#!/usr/bin/env perl6
+use v6;
+use lib 'lib';
+
+use gpl;
+
+constant $DEFAULT_WINDOW_X = 200;
+constant $DEFAULT_WINDOW_Y = 200;
+constant $DEFAULT_WINDOW_WIDTH = 500;
+constant $DEFAULT_WINDOW_HEIGHT = 500;
+constant $DEFAULT_WINDOW_RED = 1.0;
+constant $DEFAULT_WINDOW_GREEN = 1.0;
+constant $DEFAULT_WINDOW_BLUE = 1.0;
+constant $DEFAULT_WINDOW_TITLE = "gpl window";
+constant $DEFAULT_ANIMATION_SPEED = 88;
+
+# class Window
+# Window window;
+
+# state Symbol_Table symbol_table = ... figure out singleton
+
+sub illegal_usage(Str $qualifier = "")
+{
+	$*ERR.say('illegal command line argument(s)');
+	$*ERR.say('Usage:  $ gpl [-s seed] [-stdin] [-dump_pixels filename] filename[.gpl]');
+
+	$*ERR.say($qualifier) if $qualifier;
+}
+
+my Bool $dump_pixels = False;
+my Str  $dump_pixels_filename;
+my Bool $graphics_flag = False;
+
+sub user_quit_program()
+{
+}
+
+sub MAIN(Str $filename, Bool :$stdin, Int :$s, :$dump_pixels) 
+{
+	my Bool $symbol_table_flag = False;
+	my $yyin;
+	# my Str  $filename;
+	my Int  $seed = time;
+	$seed = $s if $s;
+	my Bool $read_keypresses_from_standard_input = $stdin;
+	my Str $dump_pixels_filename;
+	if $dump_pixels
+	{
+		$dump_pixels_filename = $dump_pixels;
+		$dump_pixels = True;
+	}
+
+	#getopt();
+	# loop (my $i = 0; $i < @*ARGS.elems; $i++)
+	# {
+	# 	$_ = @*ARGS[$i];
+	#
+	# 	if $_ eq "-stdin"
+	# 	{
+	# 		$read_keypresses_from_standard_input = True ;
+	# 	}
+	# 	elsif $_ eq "-s"
+	# 	{
+	# 		if $i + 1 >= $*ARGS.elems
+	# 		{
+	# 			illegal_usage();
+	# 		}
+	#
+	# 		if @*ARGS[$i+1] !~~ /^\d*$/
+	# 		{
+	# 			$*ERR.say("Illegal random number generator seed: " ~ @*ARGS[$i+1]);
+	# 			exit(1);
+	# 		}
+	#
+	# 		$seed = @*ARGS[$i+1];
+	# 		$i++;
+	# 	}
+	# 	elsif $_ eq "-dump_pixels"
+	# 	{
+	# 		if ! $graphics_flag
+	# 		{
+	# 			illegal_usage("Cannot dump the window using -dump_pixels unless graphics are enabled.");
+	# 		}
+	#
+	# 		if $i + 1 >= $*ARGS.elems
+	# 		{
+	# 			illegal_usage();
+	# 		}
+	# 		$dump_pixels_filename = @*ARGS[$i+1];
+	# 		$dump_pixels = True;
+	# 		$i++;
+	# 	}
+	# 	else
+	# 	{
+	# 		if $filename
+	# 		{
+	# 			illegal_usage();
+	# 		}
+	# 		$filename = $_;
+	# 	}
+	# }
+	#
+	# if ! $filename
+	# {
+	# 	illegal_usage();
+	# }
+
+	if $filename.IO.r
+	{
+		$yyin = $filename.IO.slurp;
+	}
+	elsif ($filename~".gpl").IO.r
+	{
+		$yyin = ($filename~".gpl").IO.slurp;
+	}
+	else
+	{
+		$*ERR.say("Cannot open input file <" ~ $filename ~ ">.");
+		exit(1);
+	}
+
+	srand($seed);
+
+	say "gpl.cpp::main()";
+	say "  input file(" ~ $filename ~ ")";
+	say "  random seed(" ~ $seed ~ ")";
+	say "  read_keypresses_from_standard_input("
+		 ~ ($read_keypresses_from_standard_input ?? "true" !! "false") ~ ")";
+
+	if ($dump_pixels)
+	{
+		say "  dump_pixels(true, file = " ~ $dump_pixels_filename ~ ")";
+	}
+	else
+	{
+		say "  dump_pixels(false)";
+	}
+
+	say "  symbol_table(" ~ ($symbol_table_flag ?? "true" !! "false") ~ ")";
+	say "  graphics(" ~ ($graphics_flag ?? "true" !! "false") ~ ")\n";
+
+	say "gpl.cpp::main() Calling yyparse()\n";
+
+	my Int $parse_result = Gpl.parse($yyin, actions => GplActions);
+
+	say "\ngpl.cpp::main() after call to yyparse().\n";
+
+	# Error::starting_execution();
+	
+    # if (parse_result != 0 || Error::num_errors() != 0)
+    # {
+    #   // This is sent to cout instead of cerr so it
+    #   // ends up in the .out files
+    #   // It makes it easier to understand what happened when
+    #   // reading the .out files
+    #   cout << Error::num_errors() << " error";
+    #   if (Error::num_errors() > 1)
+    #     cout << "s";
+    #   cout << " found."
+    #        << endl
+    #        << "gpl giving up."
+    #        << endl;
+    #
+    #   exit(1);
+    # }
+	
+    # else
+    # {
+    #   cout << "No errors found (parser probably worked correctly)."
+    #        << endl
+    #        << endl;
+    # }
+
+    say "Graphics is turned off by the Makefile.  Program exiting.\n";
+    say "gpl.cpp::main() done.";
+}

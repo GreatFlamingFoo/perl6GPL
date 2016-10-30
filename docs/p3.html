@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html><head>
+
+
+
+
+
+  <meta http-equiv="Pragma" content="no-cache">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="CONTENT-TYPE"><title>GPL p3</title>
+
+
+
+
+
+  
+
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <meta content="OpenOffice.org 1.1.0 (Linux)" name="GENERATOR">
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  <meta content="Tyson Henry" name="AUTHOR">
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  <meta content="20040220;10215400" name="CREATED">
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  <meta content="Tyson Henry" name="CHANGEDBY">
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  <meta content="20040220;10221500" name="CHANGED"></head><body style="direction: ltr;" lang="en-US"><big>Game Programming Language<br>
+
+
+
+
+
+
+Phase 3: gpl scanner and parser<br>
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+</big>
+<hr style="width: 100%; height: 2px;">
+<p><font size="4"><b><font size="5">Overview:</font></b></font>
+</p>
+
+
+
+
+
+
+<blockquote><font size="4">Write a lexical analyzer
+(gpl.l) and parser
+(gpl.y) for gpl.&nbsp; </font><br>
+
+
+
+
+
+
+  <font size="4"><br>
+
+
+
+
+
+
+The lexical
+analyzer should handle all the keywords in gpl, all the special
+symbols (e.g. ; and .), the operators, and the types (integers,
+doubles, strings).&nbsp; A complete list of tokens is in <a href="src/p3/tokens">src/p3/tokens</a>.<br>
+
+
+
+
+
+
+  <br>
+
+
+
+
+
+
+The parser should handle the entire </font><a href="src/p3/grammar"><font size="4">grammar</font></a><font size="4">.&nbsp;
+It should parse any syntactically legal gpl program but not do
+anything (your solution will be the parser w/o any actions in { }).<br>
+
+
+
+
+
+
+  <br>
+
+
+
+
+
+
+The grammar is ambiguous.&nbsp; You will have to specify the
+precedence
+of the operators to remove the ambiguities (this is done in gpl.y using
+%left, %right, %nonassoc).&nbsp; The operator precedence should
+follow
+the operator precedence of
+C/C++ (find a chart and follow it).&nbsp; See hints below for more
+on
+operators precedence.<br>
+
+
+
+
+
+
+  <br>
+
+
+
+
+
+
+  </font></blockquote>
+
+
+
+
+
+
+<hr style="width: 100%; height: 2px;">
+<p><small><b><font size="5"><small>Program Requirements:</small></font></b>
+</small></p>
+
+
+
+
+
+
+<blockquote style="margin-bottom: 0in;"><font size="4">When
+bison
+processes
+your gpl.y file, it must not issue any conflicts (shift/shift,
+shift/reduce, or
+reduce/reduce).&nbsp; Your assignment will not be considered
+completed
+if there are ANY conflicts. &nbsp;To remove the conflicts, you will
+have to specify the precedences for
+all the operators and for the if statement (see hints
+section).</font></blockquote>
+
+
+
+
+
+
+<blockquote style="margin-bottom: 0in;"><font size="4">Tokens
+(specified in gpl.y using %token, and used in gpl.l and gpl.y)&nbsp; (you may copy the %token statements from the bottom of </font><font size="4"><a href="src/p3/tokens">src/p3/tokens</a>)</font></blockquote>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<blockquote style="margin-bottom: 0in;"><font size="4">Keywords
+  </font></blockquote>
+
+
+
+
+
+
+<blockquote style="margin-left: 0.89in; margin-bottom: 0in; font-family: courier new,courier,monospace;">int
+double string triangle pixmap circle rectangle textbox forward
+initialization on animation if for else exit print true false
+space&nbsp;
+leftarrow rightarrow uparrow downarrow 
+leftmouse_down middlemouse_down rightmouse_down
+leftmouse_up middlemouse_up rightmouse_up
+mouse_move mouse_drag
+f1 akey skey dkey fkey hkey jkey
+kkey lkey wkey touches near sin cos tan asin acos atan sqrt abs floor random</blockquote>
+
+
+
+
+
+
+<blockquote style="margin-bottom: 0in;"><font size="4">Symbols (these symbols do not require a precedence--they are not operators in gpl)<br></font></blockquote>
+
+
+
+
+
+
+<blockquote style="margin-left: 0.89in; margin-bottom: 0in;"><font face="Courier New, monospace"><font size="3">(
+) { } [ ] ; , . &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br>
+
+
+
+
+
+
+= += -= ++ --<br>
+<br><br></font></font></blockquote><div style="margin-left: 40px;"><font size="4">Operators (you need to specify a precedence for each of these)</font></div><blockquote style="margin-left: 0.89in; margin-bottom: 0in;"><font face="Courier New, monospace"><font size="3">
+
+
+
+
+
+
+* / + - %<br>
+
+
+
+
+
+
+&lt; &gt; &lt;= &gt;= == != !&nbsp;
+&amp;&amp; ||<br>
+
+
+
+
+
+
+  </font></font></blockquote>
+
+
+
+
+
+
+<blockquote style="margin-bottom: 0in;"><font size="4">Special Operators that <span style="font-weight: bold;">do not</span> have a precedence (you should not specify a precedence for any of these)<br>
+  <br>
+</font>
+  <div style="margin-left: 40px;"><font face="Courier New, monospace"><font size="3">sin cos tan asin acos atan sqrt abs floor random touches near</font></font><br>
+  </div>
+  <font size="4"><br>
+Integer
+constant</font></blockquote>
+
+
+
+
+
+
+<blockquote style="margin-left: 0.89in; margin-bottom: 0in;"><font size="4">A
+sequence of one or more digits (0 &#8211; 9). Place the value of
+the
+int in the union_int field of the global yylval.</font></blockquote>
+
+
+
+
+
+
+<blockquote style="margin-bottom: 0in;"><font size="4">Double
+constant</font></blockquote>
+
+
+
+
+
+
+<blockquote style="margin-left: 0.89in; margin-bottom: 0in;"><font size="4">A
+sequence of one or more digits (0 - 9) that contains a period. May
+start with a period or end with a period (.1, 1., 1.1, 123.123 are
+all legal). Place the value of the double in the union_double field
+of the global yylval. &nbsp;Make sure you don't match "." as a
+double.</font></blockquote>
+
+
+
+
+
+
+<blockquote style="margin-bottom: 0in;"><font size="4">String
+constant</font></blockquote>
+
+
+
+
+
+
+<blockquote style="margin-left: 0.89in; margin-bottom: 0in;"><font size="4">Any
+sequence of characters enclosed in double quotes
+(&#8220;one&#8221;,
+&#8220;123&#8221;, &#8220;one two three&#8221; are all
+legal). Place
+the value of the string (without the quotes) in the union_string field
+of the global
+yylval. <span style="font-weight: bold;">Make sure you
+dynamically allocate a new string for each
+token.</span></font></blockquote>
+
+
+
+
+
+
+<blockquote style="margin-bottom: 0in;"><font size="4">Identifier
+  </font></blockquote>
+
+
+
+
+
+
+<blockquote style="margin-left: 0.89in; margin-bottom: 0in;"><font size="4">Any
+letter (a-z or A-Z) or underscore followed by zero or more letters,
+underscores, and digits (0-9). Place the value of the string in the
+union_string field of the global yylval. <span style="font-weight: bold;">Make sure you dynamically
+allocate a new string for each token.</span></font></blockquote>
+
+
+
+
+
+
+<blockquote style="margin-bottom: 0in;"><font size="4">Comments</font></blockquote>
+
+
+
+
+
+
+<blockquote style="margin-left: 0.89in; margin-bottom: 0in;"><font size="4">C++
+single line style comments (// to end of line) should be recognized.
+Comments are not returned as tokens by the lexical analyze; they are
+simply ignored (but the lines are counted).<br>
+
+
+
+
+
+
+  <br>
+
+
+
+
+
+
+  </font></blockquote>
+
+
+
+
+
+
+<div style="margin-left: 40px;"><big>Line Numbers</big><br>
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+<div style="margin-left: 40px;"><big>The print
+statement prints the
+line number of the print statement in the .gpl input file.&nbsp;
+Thus
+when gpl.l matches the keyword print, you need to put the current line
+number into the union:<br>
+
+
+
+
+
+
+</big>
+<pre style="margin-left: 40px;">void set_line_number()<br>{<br>   yylval.union_int = line_count;<br>}</pre>
+
+
+
+
+
+
+<big>You will also have to define the print token (T_PRINT) to have an int value:</big><br>
+
+
+
+
+
+
+<div style="margin-left: 40px;">
+<pre>%token &lt;union_int&gt; T_PRINT // returns line number<br></pre>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+<big>For all the other gpl statements (if, for,&nbsp; =, +=,
+-=) I also
+save the line number.&nbsp; I use the line number for
+debugging.&nbsp;
+For example, when I print my statement block it prints the line number
+of the statements in the input file (the .gpl file).&nbsp; You do
+not
+have to do this, but it can be helpful.</big><br>
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+<br>
+
+
+
+
+
+<p style="margin-left: 0.42in;"><font size="4">All
+the files you
+need (except gpl.l and gpl.y) are in <a href="src/p3">src/p3</a>.&nbsp;
+These include a main program (gpl.cpp), a Makefile, and some
+supporting classes and files.&nbsp; All the p3 files are part of the gpl.tar file that you should have downloaded for p2.</font></p>
+
+
+
+
+
+
+<p style="margin-left: 0.42in;"><big>In addition to
+necessary files, src/p3 contains several files that you won't need in
+this phase but you will need in subsequent phases. &nbsp;It is easiest
+to make them part of your program starting with p3:</big></p>
+
+
+
+
+
+
+<div style="margin-left: 40px;">
+<table style="text-align: left; width: 1093px; height: 352px;" border="1" cellpadding="2" cellspacing="2">
+
+
+
+
+
+
+  <tbody>
+
+
+
+
+
+
+    <tr>
+
+
+
+
+
+
+      <td style="font-weight: bold;">Files</td>
+
+
+
+
+
+
+      <td style="font-weight: bold;">Purpose</td>
+
+
+
+
+
+
+      <td style="font-weight: bold;">Changes</td>
+
+
+
+
+
+
+    </tr>
+
+
+
+
+
+
+    <tr>
+
+
+
+
+
+
+      <td><a href="src/p3/gpl.cpp">gpl.cpp</a></td>
+
+
+
+
+
+
+      <td>main() program for gpl. &nbsp;The C pre-processor
+is used to customize it for the different phases </td>
+
+
+
+
+
+
+      <td>Will work w/o modification for the entire project.&nbsp;
+Do not change this file.</td>
+
+
+
+
+
+
+    </tr>
+
+
+
+
+
+
+    <tr>
+
+
+
+
+
+
+      <td><a href="src/p3/Makefile">Makefile</a>&nbsp;&nbsp;</td>
+
+
+
+
+
+
+      <td>Makefile for p3-p8</td>
+
+
+
+
+
+
+      <td><br>
+</td>
+
+
+
+
+
+
+    </tr>
+
+
+
+
+
+
+    <tr>
+
+
+
+
+
+
+      <td><a href="src/p3/tokens">tokens</a></td>
+
+
+
+
+
+
+      <td>Lists all the tokens in gpl. &nbsp;Used only to
+create initial gpl.l/gpl.y</td>
+
+
+
+
+
+
+      <td><br>
+</td>
+
+
+
+
+
+
+    </tr>
+
+
+
+
+
+
+    <tr>
+
+
+
+
+
+
+      <td><a href="src/p3/parser.h">parser.h</a></td>
+
+
+
+
+
+
+      <td>Substitutes for y.tab.h. &nbsp;Always include
+parser.h instead of y.tab.h</td>
+
+
+
+
+
+
+      <td>Must update each time you add a new type to the
+flex/bison union.&nbsp; <span style="font-weight: bold;">Do not forget about this file.</span><br>
+</td>
+
+
+
+
+
+
+    </tr>
+
+
+
+
+
+
+    <tr>
+
+
+
+
+
+
+      <td><a href="src/p3/error.h">error.h</a> <a href="src/p3/error.cpp">error.cpp</a></td>
+
+
+
+
+
+
+      <td>An error reporting class that ensures your errors match
+my errors letter for letter.</td>
+
+
+
+
+
+
+      <td><span style="font-weight: bold;">Never
+change these files!</span></td>
+
+
+
+
+
+
+    </tr>
+
+
+
+
+
+
+    <tr>
+
+
+
+
+
+
+      <td><a href="src/p3/gpl_assert.h">gpl_assert.h</a><span style="text-decoration: underline;"> </span><a href="src/p3/gpl_assert.cpp">gpl_assert.cpp</a></td>
+
+
+
+
+
+
+      <td>A standard assert implementation that uses functions so
+they can be traced by the debugger.</td>
+
+
+
+
+
+
+      <td>You won't need to change this file.</td>
+
+
+
+
+
+
+    </tr>
+
+
+
+
+
+
+    
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  </tbody>
+</table>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+<br>
+
+
+
+
+
+<div style="margin-left: 40px;"><big><br>
+
+
+
+
+
+<br>
+
+
+
+
+
+</big>
+</div>
+
+
+
+
+
+
+<hr style="width: 100%; height: 2px;">
+<p style="margin-bottom: 0in;"><small><font size="5"><small><b>Hints:</b></small></font></small></p>
+
+
+
+
+
+<br>
+
+
+
+
+
+<p style="margin-left: 0.42in;"><font size="4">Do not start programming
+until you read the handout several times.&nbsp; If you get stuck, read
+the handout again.&nbsp; Many common questions are answered in the
+handout.&nbsp; When you run into a problem, you will read the handout
+with a different perspective and are likely to learn something new.<br>
+<br>
+Start
+with your array initialization
+parser from p2 (copy record.l to gpl.l and record.y to gpl.y; delete all the grammar rules).&nbsp; Copy the grammar rules from <a href="src/p3/grammar">grammar
+</a>into gpl.y.&nbsp; Insert the <a href="src/p3/tokens">%token statements</a>
+into gpl.y.&nbsp; Copy all of the %token statements.&nbsp; You will
+need to fill in the ones with blank &lt; &gt; but the others should not
+be changed. <br>
+</font></p>
+<p style="margin-left: 0.42in;"><font size="4"> Update the
+union in gpl.y. <br>
+</font></p>
+<p style="margin-left: 0.42in;"><font size="4">You will not be able to compile the lexical analyzer
+(gpl.l) until you have all the tokens in gpl.y.&nbsp; <br>
+
+
+
+
+
+
+<br>
+Once
+you finish gpl.y, you can complete gpl.l.&nbsp; Consider each <a href="src/p3/tokens">token</a> and
+create a regular expression (or two if you want to use two expressions
+for double constants) and create a line for it in.&nbsp; For example:</font></p>
+
+
+<p style="margin-left: 0.8334in;"><font size="4">"for"&nbsp;&nbsp;  &nbsp;&nbsp; return T_FOR;<br>
+</font></p>
+<p style="margin-left: 0.42in;"><font size="4">
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+The operator
+precedences are tricky.&nbsp; You will have to get them all correct
+to eliminate the conflicts reported by bison.&nbsp; Here are some
+hints:&nbsp; </font>
+</p>
+
+
+
+
+
+
+
+<p style="margin-left: 0.83in;"><font size="4">Put all the %left and
+%nonassoc statements in one place after all the %token
+statements.&nbsp; Do not mix the %left and %nonassoc in with the %token
+statements.&nbsp; When you create a precedence for an operator, do not
+remove its %token statement.</font></p>
+<p style="margin-left: 0.83in;"><font size="4">Operators with the same precedence must be on the same %left line.&nbsp; For example</font></p>
+<p style="margin-left: 1.2434in;"><font size="4">%left T_PLUS T_MINUS<br>
+</font></p>
+<p style="margin-left: 0.83in;"></p>
+<p style="margin-left: 0.83in;"><font size="4">Unary
+operators are
+non-associative (%nonassoc is the bison/yacc syntax).&nbsp; You
+will
+have to create a named precedence level for the unary
+operators.&nbsp;
+It
+looks like this:</font></p>
+
+
+
+
+
+
+
+<p style="margin-left: 1.25in; margin-bottom: 0in;"><font size="4">%nonassoc
+UNARY_OPS</font></p>
+
+
+
+
+
+
+<p style="margin-left: 0.83in;"><font size="4"><br>
+
+
+
+
+
+
+The rules that have a
+unary operator will need to be associated with this precedence level
+(UNARY_OPS):</font></p>
+
+
+
+
+
+
+<p style="margin-left: 1.25in; margin-bottom: 0in;"><font size="4">expression:
+T_MINUS expression %prec UNARY_OPS</font></p>
+
+
+
+
+
+
+<p style="margin-left: 0.83in;"><font size="4"><br>
+
+
+
+
+
+
+In order to
+remove the conflict from the if statement, you need to invent a new
+precedence token for the if without an else.</font></p>
+
+
+
+
+
+
+<p style="margin-left: 1.25in; margin-bottom: 0in;"><font size="4">%nonassoc
+IF_NO_ELSE</font></p>
+
+
+
+
+
+
+<p style="margin-left: 0.83in; margin-bottom: 0in;"><font size="4"><br>
+
+
+
+
+
+
+And
+you will have to give the T_ELSE token a precedence level (T_ELSE has a
+higher precedence level then IF_NO_ELSE).<br>
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+Now
+the if without an else needs to be associated with the IF_NO_ELSE
+precedence token just like the unary operator above.</font></p>
+<br>
+<div style="margin-left: 40px;"><big>Including
+y.tab.h</big><br>
+<big>
+
+
+
+
+
+
+</big><br>
+<big>
+
+
+
+
+
+
+</big></div>
+
+<div style="margin-left: 80px;"><big>Usually the .l
+file directly
+includes the header generated by bison when processing the .y
+file.&nbsp; This head is called y.tab.h.<br>
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+The tokens and the union are defined in y.tab.h.<br>
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+In this program we will eventually have some user defined types in the
+union (e.g. a class for expression trees will be added in phase 5).&nbsp; Thus we need to
+include the headers for these user defined types (e.g.
+expression.h) before the union.&nbsp; The solution for this is
+to
+create an include file (I call it <a href="src/p3/parser.h">parser.h</a>)&nbsp; that includes the
+user defined class headers before including y.tab.h.&nbsp; Then
+whenever y.tab.h is needed (such as in the .l file) this include file
+is included instead of directly including y.tab.h.</big><br>
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+<br>
+<br>
+<br>
+
+<div style="margin-left: 40px;"><big>Make sure that bison does not
+issue any errors (e.g. shift/reduce or reduce/reduce).&nbsp; If bison
+issues shift/reduce and/or reduce/reduce errors, it means that your
+precedences are not correct.&nbsp; <span style="font-weight: bold; color: red;">Your assignment won't be considered complete if bison reports any errors.</span> </big></div>
+<div style="margin-left: 40px;"><br>
+
+
+
+
+
+
+<big>Default return types<br>
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+</big>
+<div style="margin-left: 40px;"><big><span style="font-weight: bold;">THIS IS NOT AN ISSUE ON MOST VERSIONS OF BISON.</span><br style="font-weight: bold;">
+<span style="font-weight: bold;">IF BISON DOES NOT ISSUE ANY WARNINGS, DON'T ADD THE EMPTY BRACKETS</span><br>
+<br>
+If you have a
+token with a value
+associated with it:</big><br>
+
+
+
+
+
+
+<div style="margin-left: 40px;">
+<pre>%token &lt;union_int&gt; T_INT_CONSTANT</pre>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+<big>And a rule that has this token:</big><br>
+
+
+
+
+
+
+<div style="margin-left: 40px;">
+<pre>primary_expression:<br>	T_INT_CONSTANT</pre>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+<big>some versions of bison will create a default action that looks like this:</big><br>
+
+
+
+
+
+
+<div style="margin-left: 40px;">
+<pre>primary_expression:<br>	T_INT_CONSTANT<br>	{<br> 		$$ = $1;<br>	}<br><br></pre>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+<big>While this can be convenient, it will cause an error if the
+right-hand-side (the non-terminal symbol primary_expression in this
+example) is not typed
+correctly (a union_int in this example to match the type of
+T_INT_CONSTANT).&nbsp; If you get errors that symbols (such as
+primary_expression) is not typed correctly, then do the following:<br>
+<br>
+</big>
+<div style="margin-left: 40px;"><big>For each production for which an
+error is issued, add an empty action (empty {}) for the right-hand-side
+that has a type associated with it.&nbsp; For example, if you got the
+error for primary_expression, you would add:</big><br>
+<pre>primary_expression:<br>	T_INT_CONSTANT<br>	{<br>	}</pre>
+<big>If you include an empty action, bison will
+not
+insert the default action that causes the problem.&nbsp; HOWEVER, you
+should NOT add empty action for all the rules.&nbsp; Adding unnecessary
+empty actions will make your gpl.y longer and make it harder to read.</big><br>
+<br>
+<br>
+</div>
+<big><br>
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+</big></div>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+<div style="margin-left: 40px;"><br>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+<hr style="width: 100%; height: 2px;"><big><big><small><b><big><small>Turning in and Testing:</small></big></b></small></big></big><br>
+
+
+
+
+<br>
+
+
+
+
+<div style="margin-left: 40px;">Turnin gpl.l and gpl.y on <a href="https://turnin.ecst.csuchico.edu/">turnin.ecst.csuchico.edu</a><br>
+<br>
+See <a href="docs/turnin.html">docs/turnin.html</a> for a description of how to turn in assignments.<br>
+
+
+
+
+<br>
+
+
+
+
+See <a href="docs/testing.html">docs/testing.html</a> for a description of how to test your program.<br>
+
+
+
+<br>
+
+
+
+<br>
+
+
+
+<br>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+</body></html>
