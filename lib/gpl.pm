@@ -106,7 +106,8 @@ grammar Gpl
 	# special token that does not match any production
 	# used for characters that are not part of the language
 	token T_ERROR				{ 'fnord?' }
-	token ws					{ }
+	token ws:sym<horz>			{ \h* }
+	token ws:sym<vert>			{ \v }
 }
 
 class GplActions

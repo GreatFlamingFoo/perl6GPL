@@ -35,75 +35,78 @@ sub user_quit_program()
 {
 }
 
-sub MAIN(Str $filename, Bool :$stdin, Int :$s, :$dump_pixels) 
+start(@*ARGS);
+
+sub start(@args)
+{
+	my Bool $read_keypresses_from_standard_input = False;
+	my Int $seed;
+	my Str $filename;
+	
+	loop (my $i = 0; $i < @*ARGS.elems; $i++)
+	{
+		$_ = @*ARGS[$i];
+
+		if $_ eq "-stdin"
+		{
+			$read_keypresses_from_standard_input = True ;
+		}
+		elsif $_ eq "-s"
+		{
+			if $i + 1 >= @*ARGS.elems
+			{
+				illegal_usage();
+			}
+
+			if @*ARGS[$i+1] !~~ /^\d*$/
+			{
+				$*ERR.say("Illegal random number generator seed: " ~ @*ARGS[$i+1]);
+				exit(1);
+			}
+
+			$seed = @*ARGS[$i+1].Int();
+			$i++;
+		}
+		elsif $_ eq "-dump_pixels"
+		{
+			if ! $graphics_flag
+			{
+				illegal_usage("Cannot dump the window using -dump_pixels unless graphics are enabled.");
+			}
+
+			if $i + 1 >= $*ARGS.elems
+			{
+				illegal_usage();
+			}
+			$dump_pixels_filename = @*ARGS[$i+1];
+			$dump_pixels = True;
+			$i++;
+		}
+		else
+		{
+			if $filename
+			{
+				illegal_usage();
+			}
+			$filename = $_;
+		}
+	}
+
+	if ! $filename
+	{
+		illegal_usage();
+	}
+	
+	main($filename, 
+		read_keypresses_from_standard_input=>$read_keypresses_from_standard_input,
+		seed=>$seed, dump_pixels_filename=>$dump_pixels_filename);
+}
+
+sub main(Str $filename, Bool :$read_keypresses_from_standard_input, 
+		 Int :$seed = time, :$dump_pixels_filename) 
 {
 	my Bool $symbol_table_flag = False;
 	my $yyin;
-	# my Str  $filename;
-	my Int  $seed = time;
-	$seed = $s if $s;
-	my Bool $read_keypresses_from_standard_input = $stdin;
-	my Str $dump_pixels_filename;
-	if $dump_pixels
-	{
-		$dump_pixels_filename = $dump_pixels;
-		$dump_pixels = True;
-	}
-
-	#getopt();
-	# loop (my $i = 0; $i < @*ARGS.elems; $i++)
-	# {
-	# 	$_ = @*ARGS[$i];
-	#
-	# 	if $_ eq "-stdin"
-	# 	{
-	# 		$read_keypresses_from_standard_input = True ;
-	# 	}
-	# 	elsif $_ eq "-s"
-	# 	{
-	# 		if $i + 1 >= $*ARGS.elems
-	# 		{
-	# 			illegal_usage();
-	# 		}
-	#
-	# 		if @*ARGS[$i+1] !~~ /^\d*$/
-	# 		{
-	# 			$*ERR.say("Illegal random number generator seed: " ~ @*ARGS[$i+1]);
-	# 			exit(1);
-	# 		}
-	#
-	# 		$seed = @*ARGS[$i+1];
-	# 		$i++;
-	# 	}
-	# 	elsif $_ eq "-dump_pixels"
-	# 	{
-	# 		if ! $graphics_flag
-	# 		{
-	# 			illegal_usage("Cannot dump the window using -dump_pixels unless graphics are enabled.");
-	# 		}
-	#
-	# 		if $i + 1 >= $*ARGS.elems
-	# 		{
-	# 			illegal_usage();
-	# 		}
-	# 		$dump_pixels_filename = @*ARGS[$i+1];
-	# 		$dump_pixels = True;
-	# 		$i++;
-	# 	}
-	# 	else
-	# 	{
-	# 		if $filename
-	# 		{
-	# 			illegal_usage();
-	# 		}
-	# 		$filename = $_;
-	# 	}
-	# }
-	#
-	# if ! $filename
-	# {
-	# 	illegal_usage();
-	# }
 
 	if $filename.IO.r
 	{
